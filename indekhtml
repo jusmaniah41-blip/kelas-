@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Mengenal Akar - IPAS Kelas 4 SD</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti for Celebration Effects -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts: Fredoka & Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            green: '#10B981',
+                            lightgreen: '#D1FAE5',
+                            darkgreen: '#047857',
+                            yellow: '#F59E0B',
+                            lightyellow: '#FEF3C7',
+                            blue: '#0284C7',
+                            lightblue: '#E0F2FE',
+                            brown: '#8B4513',
+                            lightbrown: '#F5E6D3'
+                        }
+                    },
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        body: ['Plus Jakarta Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #F0FDF4;
+            user-select: none;
+        }
+        h1, h2, h3, h4, .font-fun {
+            font-family: 'Fredoka', cursive;
+        }
+        .btn-bounce:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .btn-bounce:active {
+            transform: translateY(1px) scale(0.98);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #E0F2FE;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #0284C7;
+            border-radius: 10px;
+        }
+        /* Pulse effect for interactive hotspots */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.15); opacity: 0.4; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+        .hotspot-ring {
+            animation: pulse-ring 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-emerald-50 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- HEADER NAVBAR -->
+    <header class="bg-white/90 backdrop-blur border-b-4 border-emerald-400 sticky top-0 z-50 shadow-md">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="showScreen('home-screen')">
+                <div class="bg-amber-400 text-amber-900 w-10 h-10 rounded-2xl flex items-center justify-center font-bold text-2xl shadow">
+                    🌱
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold text-emerald-800 font-fun leading-none">Petualangan Akar</h1>
+                    <p class="text-xs text-emerald-600 font-semibold hidden sm:block">IPAS Kelas 4 SD - Kurikulum Merdeka</p>
+                </div>
+            </div>
+
+            <!-- Header Action Controls -->
+            <div class="flex items-center space-x-2">
+                <button id="btn-sound" onclick="toggleSound()" class="p-2.5 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-700 transition" title="Efek Suara">
+                    <i class="fas fa-volume-up text-lg" id="sound-icon"></i>
+                </button>
+                <button onclick="openGoogleDocs()" class="px-3 py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-xl text-xs md:text-sm font-semibold flex items-center space-x-1.5 shadow transition">
+                    <i class="fas fa-file-alt"></i>
+                    <span class="hidden md:inline">Materi Complete</span> (Docs)
+                </button>
+                <button onclick="showScreen('menu-screen')" id="btn-menu-header" class="hidden px-3 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs md:text-sm font-semibold flex items-center space-x-1 shadow transition">
+                    <i class="fas fa-th-large"></i>
+                    <span>Menu</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Global Learning Progress Bar -->
+        <div class="w-full bg-emerald-100 h-2">
+            <div id="learning-progress-bar" class="bg-amber-400 h-2 transition-all duration-500" style="width: 10%;"></div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-4xl mx-auto px-4 py-6 flex-grow w-full">
+
+        <!-- ==================== 1. BERANDA & DATA SISWA ==================== -->
+        <section id="home-screen" class="space-y-6">
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border-4 border-emerald-300 text-center relative overflow-hidden">
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-amber-200 rounded-full opacity-50 blur-lg"></div>
+                <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-sky-200 rounded-full opacity-50 blur-lg"></div>
+
+                <div class="inline-block px-4 py-1.5 bg-emerald-100 text-emerald-800 rounded-full text-xs md:text-sm font-bold mb-4 border border-emerald-300">
+                    ✨ Media Pembelajaran Interaktif Kelas 4 SD
+                </div>
+
+                <h2 class="text-3xl md:text-5xl font-extrabold text-emerald-800 font-fun mb-2">
+                    Petualangan Mengenal Akar! 🌿
+                </h2>
+                <p class="text-slate-600 text-sm md:text-base max-w-xl mx-auto mb-6">
+                    Mari jelajahi rahasia hebat di bawah tanah! Cari tahu bagian-bagian akar, fungsinya, dan seberapa penting akar bagi kehidupan tanaman.
+                </p>
+
+                <!-- Student Identity Form Card -->
+                <div class="bg-amber-50 rounded-2xl p-5 md:p-6 border-2 border-amber-200 text-left max-w-md mx-auto shadow-inner mb-6">
+                    <h3 class="text-lg font-bold text-amber-900 font-fun mb-3 flex items-center gap-2">
+                        <i class="fas fa-user-graduate text-amber-600"></i> Isikan Datamu Dahulu Ya!
+                    </h3>
+                    <form id="student-form" class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-amber-900 mb-1">Nama Lengkap Siswa:</label>
+                            <input type="text" id="input-nama" required placeholder="Contoh: Budi Pratama" class="w-full px-3.5 py-2.5 rounded-xl border-2 border-amber-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none text-sm font-semibold">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-amber-900 mb-1">Kelas:</label>
+                                <input type="text" id="input-kelas" value="4 SD" required placeholder="4 SD" class="w-full px-3.5 py-2.5 rounded-xl border-2 border-amber-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none text-sm font-semibold">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-amber-900 mb-1">No. Absen:</label>
+                                <input type="number" id="input-absen" required placeholder="12" class="w-full px-3.5 py-2.5 rounded-xl border-2 border-amber-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none text-sm font-semibold">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <button onclick="startLearning()" class="btn-bounce bg-emerald-500 hover:bg-emerald-600 text-white font-fun text-xl px-8 py-4 rounded-2xl shadow-lg border-b-4 border-emerald-700 flex items-center justify-center gap-3 mx-auto transition">
+                    <span>Mulai Belajar Sekarang</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+
+                <!-- Usage Guide Box -->
+                <div class="mt-8 pt-6 border-t border-slate-200 text-xs text-slate-500 text-left grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="flex items-start gap-2">
+                        <i class="fas fa-book-reader text-emerald-600 text-base mt-0.5"></i>
+                        <span><strong>1. Baca Materi:</strong> Pelajari definisi dan jenis akar.</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <i class="fas fa-gamepad text-amber-600 text-base mt-0.5"></i>
+                        <span><strong>2. Bermain Interaktif:</strong> Jelajahi anatomi & game pasangkan.</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <i class="fas fa-trophy text-sky-600 text-base mt-0.5"></i>
+                        <span><strong>3. Kuis & Simpan:</strong> Dapatkan nilai & kirim hasil ke Guru.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 2. MENU UTAMA ==================== -->
+        <section id="menu-screen" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 shadow-xl border-4 border-emerald-300">
+                <div class="flex items-center justify-between mb-6 pb-3 border-b">
+                    <div>
+                        <h2 class="text-2xl font-bold text-emerald-800 font-fun">Pilih Petualanganmu! 🚀</h2>
+                        <p class="text-xs md:text-sm text-slate-600">Halo <span id="display-student-name" class="font-bold text-emerald-600">Siswa</span>, pilih menu di bawah ini!</p>
+                    </div>
+                    <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-bold" id="display-student-info">Kelas 4</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Menu Item 1 -->
+                    <button onclick="showScreen('materi-screen')" class="btn-bounce bg-emerald-50 hover:bg-emerald-100 p-5 rounded-2xl border-2 border-emerald-300 text-left flex items-center space-x-4 transition">
+                        <div class="bg-emerald-500 text-white w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow">
+                            📖
+                        </div>
+                        <div>
+                            <h3 class="font-fun text-lg text-emerald-900 font-bold">1. Materi Belajar Akar</h3>
+                            <p class="text-xs text-slate-600">Pelajari arti, fungsi, dan jenis-jenis akar.</p>
+                        </div>
+                    </button>
+
+                    <!-- Menu Item 2 -->
+                    <button onclick="showScreen('anatomy-screen')" class="btn-bounce bg-amber-50 hover:bg-amber-100 p-5 rounded-2xl border-2 border-amber-300 text-left flex items-center space-x-4 transition">
+                        <div class="bg-amber-500 text-white w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow">
+                            🔍
+                        </div>
+                        <div>
+                            <h3 class="font-fun text-lg text-amber-900 font-bold">2. Kenali Bagian Akar</h3>
+                            <p class="text-xs text-slate-600">Klik diagram akar interaktif untuk investigasi!</p>
+                        </div>
+                    </button>
+
+                    <!-- Menu Item 3 -->
+                    <button onclick="showScreen('matching-screen')" class="btn-bounce bg-sky-50 hover:bg-sky-100 p-5 rounded-2xl border-2 border-sky-300 text-left flex items-center space-x-4 transition">
+                        <div class="bg-sky-500 text-white w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow">
+                            🧩
+                        </div>
+                        <div>
+                            <h3 class="font-fun text-lg text-sky-900 font-bold">3. Permainan Pasangkan</h3>
+                            <p class="text-xs text-slate-600">Jodohkan bagian akar dengan fungsinya.</p>
+                        </div>
+                    </button>
+
+                    <!-- Menu Item 4 -->
+                    <button onclick="showScreen('quiz-screen')" class="btn-bounce bg-rose-50 hover:bg-rose-100 p-5 rounded-2xl border-2 border-rose-300 text-left flex items-center space-x-4 transition">
+                        <div class="bg-rose-500 text-white w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow">
+                            🎯
+                        </div>
+                        <div>
+                            <h3 class="font-fun text-lg text-rose-900 font-bold">4. Kuis Interaktif</h3>
+                            <p class="text-xs text-slate-600">Uji pemahamanmu lewat 10 soal seru.</p>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="mt-6 pt-4 border-t flex flex-wrap justify-between items-center gap-3">
+                    <button onclick="showScreen('reflection-screen')" class="px-4 py-2.5 bg-purple-100 hover:bg-purple-200 text-purple-800 font-bold rounded-xl text-xs md:text-sm flex items-center gap-2 transition">
+                        <i class="fas fa-pen-alt"></i> Isi Refleksi Belajar
+                    </button>
+                    <button onclick="openGoogleDocs()" class="px-4 py-2.5 bg-sky-100 hover:bg-sky-200 text-sky-800 font-bold rounded-xl text-xs md:text-sm flex items-center gap-2 transition">
+                        <i class="fas fa-external-link-alt"></i> Buka Rangkuman Google Docs
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 3. MENU MATERI ==================== -->
+        <section id="materi-screen" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 shadow-xl border-4 border-emerald-300">
+                <!-- Slide Header -->
+                <div class="flex items-center justify-between mb-4 pb-2 border-b">
+                    <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full" id="materi-slide-num">Slide 1 dari 5</span>
+                    <button onclick="showScreen('menu-screen')" class="text-xs font-bold text-slate-500 hover:text-slate-800">
+                        <i class="fas fa-times"></i> Tutup
+                    </button>
+                </div>
+
+                <!-- Slide Containers -->
+                <div id="materi-content-box" class="min-h-[320px] flex flex-col justify-between">
+                    <!-- Dynamic Slide Content Inserted via JS -->
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="flex items-center justify-between mt-6 pt-4 border-t">
+                    <button id="btn-materi-prev" onclick="prevSlide()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl font-bold text-sm flex items-center gap-2 transition">
+                        <i class="fas fa-chevron-left"></i> Sebelumnya
+                    </button>
+                    <button onclick="showScreen('menu-screen')" class="px-3 py-2 bg-amber-100 hover:bg-amber-200 text-amber-800 rounded-xl font-bold text-xs">
+                        <i class="fas fa-th"></i> Menu
+                    </button>
+                    <button id="btn-materi-next" onclick="nextSlide()" class="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold text-sm flex items-center gap-2 shadow transition">
+                        <span>Berikutnya</span> <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 4. AKTIVITAS 1: KENALI BAGIAN AKAR ==================== -->
+        <section id="anatomy-screen" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 shadow-xl border-4 border-amber-300">
+                <div class="text-center mb-6">
+                    <span class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-xs font-bold">Aktivitas Interaktif</span>
+                    <h2 class="text-2xl md:text-3xl font-bold text-amber-900 font-fun mt-1">Eksplorasi Anatomi Akar 🌱</h2>
+                    <p class="text-xs md:text-sm text-slate-600">Klik titik-titik melayang pada diagram di bawah untuk membuka informasi rahasia!</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                    <!-- Interactive SVG Diagram -->
+                    <div class="md:col-span-6 bg-emerald-50 p-4 rounded-2xl border-2 border-emerald-200 flex justify-center relative min-h-[300px]">
+                        <svg viewBox="0 0 300 360" class="w-full max-w-[280px] h-auto drop-shadow-md">
+                            <!-- Tanah (Soil Line) -->
+                            <rect x="0" y="0" width="300" height="60" fill="#A78BFA" opacity="0.1"/>
+                            <line x1="0" y1="60" x2="300" y2="60" stroke="#8B4513" stroke-width="4" stroke-dasharray="6,4"/>
+                            <text x="10" y="30" font-family="Fredoka" font-size="12" fill="#8B4513">🌱 Batang Utama & Tanah</text>
+
+                            <!-- Akar Utama (Tunggang) -->
+                            <path d="M 150 60 C 145 120, 155 200, 150 290" stroke="#8B4513" stroke-width="16" fill="none" stroke-linecap="round"/>
+                            <path d="M 150 60 C 145 120, 155 200, 150 290" stroke="#D97706" stroke-width="10" fill="none" stroke-linecap="round"/>
+
+                            <!-- Cabang Akar -->
+                            <path d="M 150 110 C 120 130, 90 140, 60 145" stroke="#D97706" stroke-width="5" fill="none" stroke-linecap="round"/>
+                            <path d="M 150 140 C 180 160, 210 170, 240 180" stroke="#D97706" stroke-width="5" fill="none" stroke-linecap="round"/>
+                            <path d="M 150 190 C 120 210, 100 220, 75 235" stroke="#D97706" stroke-width="4" fill="none" stroke-linecap="round"/>
+
+                            <!-- Rambut Akar Fine Details -->
+                            <path d="M 60 145 C 45 150, 35 155, 25 155" stroke="#F59E0B" stroke-width="2" fill="none"/>
+                            <path d="M 240 180 C 255 185, 265 190, 275 195" stroke="#F59E0B" stroke-width="2" fill="none"/>
+                            <path d="M 75 235 C 60 240, 50 245, 40 250" stroke="#F59E0B" stroke-width="2" fill="none"/>
+
+                            <!-- Tudung Akar / Tip -->
+                            <path d="M 144 285 C 150 305, 150 305, 156 285 Z" fill="#451A03"/>
+
+                            <!-- Interactive Clickable Hotspots -->
+                            <!-- Hotspot 1: Leher / Pangkal Akar -->
+                            <g class="cursor-pointer" onclick="selectRootPart('leher')">
+                                <circle cx="150" cy="70" r="14" fill="#EF4444" opacity="0.3" class="hotspot-ring"/>
+                                <circle cx="150" cy="70" r="10" fill="#EF4444" stroke="#FFF" stroke-width="2"/>
+                                <text x="150" y="74" text-anchor="middle" font-weight="bold" fill="#FFF" font-size="10">1</text>
+                            </g>
+
+                            <!-- Hotspot 2: Batang Akar Utama -->
+                            <g class="cursor-pointer" onclick="selectRootPart('batang')">
+                                <circle cx="150" cy="150" r="14" fill="#3B82F6" opacity="0.3" class="hotspot-ring"/>
+                                <circle cx="150" cy="150" r="10" fill="#3B82F6" stroke="#FFF" stroke-width="2"/>
+                                <text x="150" y="154" text-anchor="middle" font-weight="bold" fill="#FFF" font-size="10">2</text>
+                            </g>
+
+                            <!-- Hotspot 3: Cabang Akar -->
+                            <g class="cursor-pointer" onclick="selectRootPart('cabang')">
+                                <circle cx="210" cy="170" r="14" fill="#10B981" opacity="0.3" class="hotspot-ring"/>
+                                <circle cx="210" cy="170" r="10" fill="#10B981" stroke="#FFF" stroke-width="2"/>
+                                <text x="210" y="174" text-anchor="middle" font-weight="bold" fill="#FFF" font-size="10">3</text>
+                            </g>
+
+                            <!-- Hotspot 4: Rambut Akar -->
+                            <g class="cursor-pointer" onclick="selectRootPart('rambut')">
+                                <circle cx="45" cy="150" r="14" fill="#F59E0B" opacity="0.3" class="hotspot-ring"/>
+                                <circle cx="45" cy="150" r="10" fill="#F59E0B" stroke="#FFF" stroke-width="2"/>
+                                <text x="45" y="154" text-anchor="middle" font-weight="bold" fill="#FFF" font-size="10">4</text>
+                            </g>
+
+                            <!-- Hotspot 5: Tudung Akar / Kaliptra -->
+                            <g class="cursor-pointer" onclick="selectRootPart('tudung')">
+                                <circle cx="150" cy="295" r="14" fill="#8B5CF6" opacity="0.3" class="hotspot-ring"/>
+                                <circle cx="150" cy="295" r="10" fill="#8B5CF6" stroke="#FFF" stroke-width="2"/>
+                                <text x="150" y="299" text-anchor="middle" font-weight="bold" fill="#FFF" font-size="10">5</text>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- Detail Information Box -->
+                    <div class="md:col-span-6 bg-amber-50 p-5 rounded-2xl border-2 border-amber-200 min-h-[280px] flex flex-col justify-between">
+                        <div id="anatomy-info-box">
+                            <div class="text-center py-8 text-amber-800">
+                                <i class="fas fa-hand-pointer text-4xl mb-3 text-amber-500 animate-bounce"></i>
+                                <p class="font-fun text-lg font-bold">Pilih Nomor Pada Gambar!</p>
+                                <p class="text-xs text-slate-600 mt-1">Klik nomor 1-5 pada diagram untuk membedah fungsi bagian akar.</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-t border-amber-200 flex justify-between items-center text-xs text-amber-900 font-semibold">
+                            <span>💡 Tips: Klik semua bagian untuk memahami materi secara utuh.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center mt-6 pt-4 border-t">
+                    <button onclick="showScreen('materi-screen')" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 rounded-xl font-bold text-xs">
+                        <i class="fas fa-arrow-left"></i> Kembali ke Materi
+                    </button>
+                    <button onclick="showScreen('matching-screen')" class="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm rounded-xl shadow">
+                        Lanjut Game Pasangkan <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 5. AKTIVITAS 2: PASANGKAN ==================== -->
+        <section id="matching-screen" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 shadow-xl border-4 border-sky-300">
+                <div class="text-center mb-6">
+                    <span class="bg-sky-100 text-sky-800 px-3 py-1 rounded-full text-xs font-bold">Aktivitas Mencocokkan</span>
+                    <h2 class="text-2xl md:text-3xl font-bold text-sky-900 font-fun mt-1">Permainan Pasangkan Bagian & Fungsi 🧩</h2>
+                    <p class="text-xs md:text-sm text-slate-600">Klik 1 pilihan di kolom **Bagian** lalu klik pasangannya di kolom **Fungsi**!</p>
+                </div>
+
+                <!-- Feedback Toast -->
+                <div id="matching-toast" class="hidden mb-4 p-3 rounded-xl text-center font-bold text-sm transition-all duration-300"></div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Left Column: Bagian Akar -->
+                    <div class="space-y-3">
+                        <h3 class="font-fun text-sm font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                            <i class="fas fa-cubes text-sky-500"></i> Bagian Akar:
+                        </h3>
+                        <div id="matching-left-list" class="space-y-2">
+                            <!-- Items Rendered dynamically via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Fungsi Akar -->
+                    <div class="space-y-3">
+                        <h3 class="font-fun text-sm font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                            <i class="fas fa-bullseye text-amber-500"></i> Fungsi Utama:
+                        </h3>
+                        <div id="matching-right-list" class="space-y-2">
+                            <!-- Items Rendered dynamically via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t flex justify-between items-center">
+                    <button onclick="resetMatchingGame()" class="px-4 py-2 bg-amber-100 hover:bg-amber-200 text-amber-800 rounded-xl font-bold text-xs">
+                        <i class="fas fa-redo"></i> Reset Permainan
+                    </button>
+                    <button onclick="showScreen('quiz-screen')" class="px-5 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold text-sm shadow">
+                        Mulai Kuis Uji Pemahaman <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 6. KUIS INTERAKTIF ==================== -->
+        <section id="quiz-screen" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 shadow-xl border-4 border-rose-300">
+                <!-- Quiz Progress Bar -->
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-8 h-8 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-xs" id="quiz-num-badge">1</span>
+                        <span class="text-xs font-bold text-slate-500">Soal <span id="quiz-current-num">1</span> dari 10</span>
+                    </div>
+                    <div class="text-xs font-bold text-emerald-600 bg-emerald-100 px-3 py-1 rounded-full">
+                        Skor Sementara: <span id="quiz-live-score">0</span>
+                    </div>
+                </div>
+
+                <!-- Question Box -->
+                <div id="quiz-box" class="space-y-4">
+                    <h3 id="quiz-question-text" class="text-lg md:text-xl font-bold text-slate-800 font-fun leading-snug">
+                        Memuat pertanyaan...
+                    </h3>
+
+                    <!-- 4 Option Buttons -->
+                    <div id="quiz-options-container" class="grid grid-cols-1 gap-3 pt-2">
+                        <!-- Options generated dynamically -->
+                    </div>
+
+                    <!-- Instant Explanation feedback -->
+                    <div id="quiz-feedback-box" class="hidden p-4 rounded-2xl border-2 text-sm space-y-1">
+                        <p font-bold id="quiz-feedback-title" class="font-bold text-base"></p>
+                        <p id="quiz-feedback-desc" class="text-xs leading-relaxed"></p>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center mt-6 pt-4 border-t">
+                    <button onclick="showScreen('menu-screen')" class="px-3 py-2 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl font-bold text-xs">
+                        <i class="fas fa-arrow-left"></i> Batal / Menu
+                    </button>
+                    <button id="btn-quiz-next" onclick="nextQuestion()" class="hidden px-6 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold text-sm shadow transition">
+                        Lanjut Soal Berikutnya <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 7. HASIL KUIS ==================== -->
+        <section id="result-screen" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border-4 border-amber-300 text-center">
+                <div class="inline-block p-4 rounded-full bg-amber-100 text-amber-600 text-4xl mb-3 shadow-inner" id="result-badge-icon">
+                    🏆
+                </div>
+
+                <h2 class="text-3xl font-extrabold text-slate-800 font-fun" id="result-title">Hasil Kuis Kamu!</h2>
+                <p class="text-sm text-slate-600 mb-6">Berikut adalah pencapaian belajar atas nama <strong id="res-student-name" class="text-emerald-700">--</strong></p>
+
+                <!-- Big Score Card -->
+                <div class="bg-gradient-to-br from-emerald-500 to-teal-700 text-white p-6 rounded-3xl max-w-sm mx-auto shadow-lg mb-6">
+                    <p class="text-xs uppercase font-bold tracking-wider opacity-90">NILAI AKHIR</p>
+                    <div class="text-6xl font-extrabold font-fun my-2" id="res-score-number">0</div>
+                    <div id="res-category-pill" class="inline-block px-4 py-1 rounded-full bg-white/20 text-xs font-bold backdrop-blur">
+                        Sangat Baik
+                    </div>
+                </div>
+
+                <!-- Details Grid -->
+                <div class="grid grid-cols-2 gap-4 max-w-sm mx-auto mb-6 text-sm">
+                    <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-200">
+                        <span class="block text-xs text-slate-500 font-semibold">Jawaban Benar</span>
+                        <span class="text-xl font-bold text-emerald-600" id="res-correct-count">0</span>
+                    </div>
+                    <div class="bg-rose-50 p-3 rounded-2xl border border-rose-200">
+                        <span class="block text-xs text-slate-500 font-semibold">Jawaban Salah</span>
+                        <span class="text-xl font-bold text-rose-600" id="res-wrong-count">0</span>
+                    </div>
+                </div>
+
+                <p id="res-motivation-text" class="text-xs md:text-sm text-slate-700 italic max-w-md mx-auto mb-6 bg-amber-50 p-3 rounded-xl border border-amber-200">
+                    "Luar biasa! Kamu memahami bagian-bagian akar dengan sangat baik!"
+                </p>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-3">
+                    <button onclick="restartQuiz()" class="px-5 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-2xl font-bold text-sm shadow">
+                        <i class="fas fa-redo"></i> Ulangi Kuis
+                    </button>
+                    <button onclick="showScreen('reflection-screen')" class="px-5 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl font-bold text-sm shadow">
+                        Lanjut ke Refleksi Siswa <i class="fas fa-pen"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 8. REFLEKSI & KIRIM DATA ==================== -->
+        <section id="reflection-screen" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 shadow-xl border-4 border-purple-300">
+                <div class="text-center mb-6">
+                    <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-bold">Langkah Terakhir</span>
+                    <h2 class="text-2xl md:text-3xl font-bold text-purple-900 font-fun mt-1">Refleksi Belajar Siswa 📝</h2>
+                    <p class="text-xs md:text-sm text-slate-600">Jawab pertanyaan singkat ini untuk melengkapi laporan belajar ke Guru!</p>
+                </div>
+
+                <form id="reflection-form" class="space-y-4">
+                    <div class="bg-purple-50 p-4 rounded-2xl border border-purple-200">
+                        <label class="block text-xs md:text-sm font-bold text-purple-900 mb-1">1. Apa yang kamu ketahui tentang akar?</label>
+                        <textarea id="ref-q1" required rows="2" placeholder="Tuliskan pemahamanmu tentang akar..." class="w-full px-3 py-2 rounded-xl border border-purple-300 focus:ring-2 focus:ring-purple-400 outline-none text-xs md:text-sm"></textarea>
+                    </div>
+
+                    <div class="bg-purple-50 p-4 rounded-2xl border border-purple-200">
+                        <label class="block text-xs md:text-sm font-bold text-purple-900 mb-1">2. Apa fungsi akar bagi tumbuhan?</label>
+                        <textarea id="ref-q2" required rows="2" placeholder="Sebutkan fungsi-fungsi penting akar..." class="w-full px-3 py-2 rounded-xl border border-purple-300 focus:ring-2 focus:ring-purple-400 outline-none text-xs md:text-sm"></textarea>
+                    </div>
+
+                    <div class="bg-purple-50 p-4 rounded-2xl border border-purple-200">
+                        <label class="block text-xs md:text-sm font-bold text-purple-900 mb-1">3. Bagian akar apa yang paling kamu ingat dan mengapa?</label>
+                        <textarea id="ref-q3" required rows="2" placeholder="Misal: Rambut akar karena menyerap air..." class="w-full px-3 py-2 rounded-xl border border-purple-300 focus:ring-2 focus:ring-purple-400 outline-none text-xs md:text-sm"></textarea>
+                    </div>
+
+                    <div class="bg-purple-50 p-4 rounded-2xl border border-purple-200">
+                        <label class="block text-xs md:text-sm font-bold text-purple-900 mb-1">4. Apa hal baru yang kamu pelajari hari ini?</label>
+                        <textarea id="ref-q4" required rows="2" placeholder="Tulis hal menarik baru hari ini..." class="w-full px-3 py-2 rounded-xl border border-purple-300 focus:ring-2 focus:ring-purple-400 outline-none text-xs md:text-sm"></textarea>
+                    </div>
+
+                    <!-- Submission Status Banner -->
+                    <div id="submit-status-banner" class="hidden p-4 rounded-2xl text-center text-xs md:text-sm font-bold"></div>
+
+                    <div class="pt-2 flex justify-between items-center">
+                        <button type="button" onclick="showScreen('menu-screen')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl font-bold text-xs">
+                            Batal
+                        </button>
+                        <button type="submit" id="btn-submit-all" class="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl font-bold text-sm shadow flex items-center gap-2">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>Kirim Hasil Belajar ke Guru</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-emerald-900 text-emerald-100 py-4 px-4 text-center text-xs border-t-4 border-amber-400 mt-8">
+        <div class="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+            <p>© 2026 Media Pembelajaran IPAS Kelas 4 - Akar dan Fungsinya</p>
+            <p class="text-emerald-300 font-medium">Kurikulum Merdeka • Ramah HP & Laptop</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /* ==================== CONFIGURATION VARIABLES ==================== */
+        // GANTI DENGAN LINK GOOGLE DOCS MATERI LENGKAP MILIK GURU
+        const GOOGLE_DOCS_URL = "https://docs.google.com/document/d/1exampleDocID_AkarDanFungsinya/edit?usp=sharing";
+
+        // GANTI DENGAN URL GOOGLE APPS SCRIPT WEB APP ANDA
+        const GOOGLE_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx_EXAMPLE_WEB_APP_URL/exec";
+
+        /* ==================== APP STATE ==================== */
+        let studentData = {
+            nama: "",
+            kelas: "4 SD",
+            absen: ""
+        };
+
+        let currentMateriSlide = 0;
+        let soundEnabled = true;
+
+        // Quiz State
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+        let correctAnswers = 0;
+        let wrongAnswers = 0;
+        let userAnswers = [];
+
+        /* ==================== AUDIO SYNTHESIZER (No External Files) ==================== */
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'click') {
+                    osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.05);
+                } else if (type === 'correct') {
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.35);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(180, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(130, audioCtx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.3);
+                } else if (type === 'fanfare') {
+                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                }
+            } catch (e) {
+                console.log("Audio not supported or blocked");
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            if (soundEnabled) {
+                icon.className = 'fas fa-volume-up text-lg';
+            } else {
+                icon.className = 'fas fa-volume-mute text-lg text-slate-400';
+            }
+        }
+
+        function openGoogleDocs() {
+            playSound('click');
+            if (GOOGLE_DOCS_URL.includes("exampleDocID")) {
+                alert("Catatan Guru: Link Google Docs belum diganti. Silakan ganti variabel GOOGLE_DOCS_URL di dalam file HTML!");
+            }
+            window.open(GOOGLE_DOCS_URL, '_blank');
+        }
+
+        /* ==================== SCREEN NAVIGATION ==================== */
+        function showScreen(screenId) {
+            playSound('click');
+            const screens = ['home-screen', 'menu-screen', 'materi-screen', 'anatomy-screen', 'matching-screen', 'quiz-screen', 'result-screen', 'reflection-screen'];
+            
+            screens.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+
+            const activeEl = document.getElementById(screenId);
+            if (activeEl) activeEl.classList.remove('hidden');
+
+            // Header Menu button visibility
+            const btnMenuHeader = document.getElementById('btn-menu-header');
+            if (screenId === 'home-screen') {
+                btnMenuHeader.classList.add('hidden');
+            } else {
+                btnMenuHeader.classList.remove('hidden');
+            }
+
+            // Update Progress Bar
+            updateProgressBar(screenId);
+
+            // Screen Specific Init
+            if (screenId === 'materi-screen') renderSlide();
+            if (screenId === 'matching-screen') initMatchingGame();
+            if (screenId === 'quiz-screen' && currentQuizIndex === 0) loadQuizQuestion();
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateProgressBar(screenId) {
+            const bar = document.getElementById('learning-progress-bar');
+            let progress = 10;
+            if (screenId === 'menu-screen') progress = 25;
+            if (screenId === 'materi-screen') progress = 45;
+            if (screenId === 'anatomy-screen') progress = 60;
+            if (screenId === 'matching-screen') progress = 75;
+            if (screenId === 'quiz-screen') progress = 85;
+            if (screenId === 'result-screen') progress = 95;
+            if (screenId === 'reflection-screen') progress = 100;
+            bar.style.width = progress + '%';
+        }
+
+        /* ==================== STUDENT REGISTRATION ==================== */
+        function startLearning() {
+            const nama = document.getElementById('input-nama').value.trim();
+            const kelas = document.getElementById('input-kelas').value.trim();
+            const absen = document.getElementById('input-absen').value.trim();
+
+            if (!nama) {
+                alert("Mohon isi nama lengkapmu terlebih dahulu ya!");
+                return;
+            }
+
+            studentData.nama = nama;
+            studentData.kelas = kelas || "4 SD";
+            studentData.absen = absen || "-";
+
+            document.getElementById('display-student-name').innerText = studentData.nama;
+            document.getElementById('display-student-info').innerText = `${studentData.kelas} (No. ${studentData.absen})`;
+
+            showScreen('menu-screen');
+        }
+
+        /* ==================== MATERI SLIDES DATA ==================== */
+        const materiSlides = [
+            {
+                title: "🌱 Apa Itu Akar Tumbuhan?",
+                badge: "Pengertian Dasar",
+                content: `
+                    <div class="space-y-4">
+                        <div class="bg-emerald-50 p-4 rounded-2xl border-2 border-emerald-200 flex items-start gap-3">
+                            <span class="text-3xl">🪴</span>
+                            <div>
+                                <p class="text-sm md:text-base leading-relaxed text-slate-700">
+                                    <strong>Akar</strong> adalah bagian tumbuhan yang biasanya berada di dalam tanah. Akar bekerja sangat keras di bawah tanah untuk menopang kehidupan tumbuhan di atasnya!
+                                </p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                            <div class="bg-amber-50 p-3 rounded-xl border border-amber-200">
+                                <h4 class="font-bold text-amber-900 text-sm">📍 Dimana Akar Berada?</h4>
+                                <p class="text-xs text-slate-600 mt-1">Sebagian besar di dalam tanah, namun ada juga akar yang menggantung di udara!</p>
+                            </div>
+                            <div class="bg-sky-50 p-3 rounded-xl border border-sky-200">
+                                <h4 class="font-bold text-sky-900 text-sm">🔍 Ciri-Ciri Utama</h4>
+                                <p class="text-xs text-slate-600 mt-1">Tumbuh mengarah ke bawah tanah atau ke tempat yang lembap dan kaya air.</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "⚡ 4 Fungsi Utama Akar Bagi Tumbuhan",
+                badge: "Fungsi Akar",
+                content: `
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="bg-emerald-50 p-3.5 rounded-2xl border border-emerald-300 flex items-start gap-2.5">
+                            <span class="text-2xl">💧</span>
+                            <div>
+                                <h4 class="font-bold text-emerald-900 text-sm">1. Menyerap Air & Mineral</h4>
+                                <p class="text-xs text-slate-600 mt-0.5">Menyedot air serta zat hara dari dalam tanah untuk bahan pembuatan makanan (fotosintesis).</p>
+                            </div>
+                        </div>
+                        <div class="bg-amber-50 p-3.5 rounded-2xl border border-amber-300 flex items-start gap-2.5">
+                            <span class="text-2xl">⚓</span>
+                            <div>
+                                <h4 class="font-bold text-amber-900 text-sm">2. Menancapkan Tumbuhan</h4>
+                                <p class="text-xs text-slate-600 mt-0.5">Membuat tanaman berdiri kokoh agar tidak mudah roboh tertiup angin kencang.</p>
+                            </div>
+                        </div>
+                        <div class="bg-sky-50 p-3.5 rounded-2xl border border-sky-300 flex items-start gap-2.5">
+                            <span class="text-2xl">🥔</span>
+                            <div>
+                                <h4 class="font-bold text-sky-900 text-sm">3. Menyimpan Cadangan Makanan</h4>
+                                <p class="text-xs text-slate-600 mt-0.5">Pada tumbuhan tertentu seperti singkong dan wortel, makanan disimpan di akar.</p>
+                            </div>
+                        </div>
+                        <div class="bg-purple-50 p-3.5 rounded-2xl border border-purple-300 flex items-start gap-2.5">
+                            <span class="text-2xl">🌬️</span>
+                            <div>
+                                <h4 class="font-bold text-purple-900 text-sm">4. Alat Pernapasan</h4>
+                                <p class="text-xs text-slate-600 mt-0.5">Pohon bakau memiliki akar napas khusus untuk mengambil oksigen dari udara.</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "🌳 Akar Tunggang (Dapat Ditemukan di Tumbuhan Dikotil)",
+                badge: "Jenis Akar #1",
+                content: `
+                    <div class="space-y-3">
+                        <div class="bg-amber-50 p-4 rounded-2xl border-2 border-amber-300 flex flex-col sm:flex-row items-center gap-4">
+                            <div class="text-5xl">🥕</div>
+                            <div class="text-xs md:text-sm text-slate-700 space-y-1">
+                                <p><strong>Ciri Akar Tunggang:</strong> Memiliki 1 akar utama yang tumbuh besar dan menghujam dalam ke tanah, lalu tumbuh cabang-cabang akar kecil di sekelilingnya.</p>
+                                <p class="text-amber-800 font-semibold">Tumbuhan pemilik: Mangga, Rambutan, Wortel, Jambu, dan Kacang-kacangan.</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "🌾 Akar Serabut (Dapat Ditemukan di Tumbuhan Monokotil)",
+                badge: "Jenis Akar #2",
+                content: `
+                    <div class="space-y-3">
+                        <div class="bg-sky-50 p-4 rounded-2xl border-2 border-sky-300 flex flex-col sm:flex-row items-center gap-4">
+                            <div class="text-5xl">🌴</div>
+                            <div class="text-xs md:text-sm text-slate-700 space-y-1">
+                                <p><strong>Ciri Akar Serabut:</strong> Tidak memiliki akar utama. Akar berbentuk serabut halus berukuran hamper sama yang keluar langsung dari pangkal batang.</p>
+                                <p class="text-sky-800 font-semibold">Tumbuhan pemilik: Padi, Jagung, Kelapa, Rumput, dan Bawang.</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "⭐ Pentingnya Akar Bagi Bumi & Kehidupan",
+                badge: "Refleksi Alam",
+                content: `
+                    <div class="bg-emerald-100 p-5 rounded-2xl border-2 border-emerald-400 space-y-3 text-slate-800 text-xs md:text-sm">
+                        <h4 class="font-bold text-emerald-900 text-base">Mengapa Akar Sangat Penting?</h4>
+                        <p>Selain membantu tanaman tumbuh subur, akar tumbuhan di hutan sangat berguna untuk <strong>mencegah erosi tanah dan tanah longsor</strong>!</p>
+                        <p>Akar canggih mengikat butiran tanah dan menyimpan cadangan air hujan di bawah tanah agar bumi kita tetap terlindungi.</p>
+                    </div>
+                `
+            }
+        ];
+
+        function renderSlide() {
+            const slide = materiSlides[currentMateriSlide];
+            document.getElementById('materi-slide-num').innerText = `Slide ${currentMateriSlide + 1} dari ${materiSlides.length}`;
+            
+            const html = `
+                <div>
+                    <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 font-bold rounded-full text-xs mb-2 border border-emerald-300">${slide.badge}</span>
+                    <h3 class="text-xl md:text-2xl font-bold text-emerald-900 font-fun mb-4">${slide.title}</h3>
+                    ${slide.content}
+                </div>
+            `;
+            document.getElementById('materi-content-box').innerHTML = html;
+
+            document.getElementById('btn-materi-prev').disabled = (currentMateriSlide === 0);
+            document.getElementById('btn-materi-prev').style.opacity = (currentMateriSlide === 0) ? "0.5" : "1";
+
+            if (currentMateriSlide === materiSlides.length - 1) {
+                document.getElementById('btn-materi-next').innerHTML = `<span>Lanjut Aktivitas</span> <i class="fas fa-play"></i>`;
+            } else {
+                document.getElementById('btn-materi-next').innerHTML = `<span>Berikutnya</span> <i class="fas fa-chevron-right"></i>`;
+            }
+        }
+
+        function nextSlide() {
+            playSound('click');
+            if (currentMateriSlide < materiSlides.length - 1) {
+                currentMateriSlide++;
+                renderSlide();
+            } else {
+                showScreen('anatomy-screen');
+            }
+        }
+
+        function prevSlide() {
+            playSound('click');
+            if (currentMateriSlide > 0) {
+                currentMateriSlide--;
+                renderSlide();
+            }
+        }
+
+        /* ==================== ROOT ANATOMY EXPLORER ==================== */
+        const rootPartsInfo = {
+            leher: {
+                title: "1. Leher / Pangkal Akar",
+                badge: "Bagian Atas",
+                color: "red",
+                desc: "Bagian akar yang bersambungan langsung dengan pangkal batang tumbuhan. Berfungsi menyalurkan air dan mineral dari akar ke batang."
+            },
+            batang: {
+                title: "2. Batang Akar Utama",
+                badge: "Bagian Tengah",
+                color: "blue",
+                desc: "Bagian akar yang berada di antara leher akar dan ujung akar. Memiliki jaringan pembuluh untuk mengangkut air."
+            },
+            cabang: {
+                title: "3. Cabang-Cabang Akar",
+                badge: "Percabangan",
+                color: "emerald",
+                desc: "Bagian akar yang keluar dari batang akar utama. Bertugas memperluas jangkauan pencarian air di dalam tanah."
+            },
+            rambut: {
+                title: "4. Rambut / Bulu Akar",
+                badge: "Penyerap Air Utama",
+                color: "amber",
+                desc: "Buluan halus di sekitar cabang akar. Memiliki fungsi khusus menyerap air dan mineral hara dari pori-pori tanah secara maksimal."
+            },
+            tudung: {
+                title: "5. Tudung Akar (Kaliptra)",
+                badge: "Pelindung Ujung",
+                color: "purple",
+                desc: "Terletak di paling ujung akar. Fungsinya melindungi ujung akar yang lembut saat menembus butiran tanah yang keras."
+            }
+        };
+
+        function selectRootPart(partKey) {
+            playSound('click');
+            const data = rootPartsInfo[partKey];
+            const infoBox = document.getElementById('anatomy-info-box');
+
+            infoBox.innerHTML = `
+                <div class="space-y-3 animate-fade-in">
+                    <span class="inline-block px-3 py-1 bg-${data.color}-100 text-${data.color}-800 font-bold rounded-full text-xs">${data.badge}</span>
+                    <h4 class="font-fun text-xl font-bold text-slate-800">${data.title}</h4>
+                    <p class="text-xs md:text-sm text-slate-700 leading-relaxed">${data.desc}</p>
+                </div>
+            `;
+        }
+
+        /* ==================== MATCHING GAME LOGIC ==================== */
+        const matchingPairs = [
+            { id: 1, part: "Rambut Akar", desc: "Menyerap air dan mineral dari tanah" },
+            { id: 2, part: "Tudung Akar (Kaliptra)", desc: "Melindungi ujung akar saat menembus tanah" },
+            { id: 3, part: "Akar Tunggang", desc: "Memiliki 1 akar utama yang besar & dalam" },
+            { id: 4, part: "Akar Serabut", desc: "Akar berupa kumpulan benang halus sejajar" }
+        ];
+
+        let selectedLeft = null;
+        let selectedRight = null;
+        let matchedCount = 0;
+
+        function initMatchingGame() {
+            selectedLeft = null;
+            selectedRight = null;
+            matchedCount = 0;
+
+            const toast = document.getElementById('matching-toast');
+            toast.className = 'hidden mb-4 p-3 rounded-xl text-center font-bold text-sm';
+
+            // Shuffle right answers
+            const shuffledRight = [...matchingPairs].sort(() => Math.random() - 0.5);
+
+            let leftHtml = '';
+            matchingPairs.forEach(pair => {
+                leftHtml += `
+                    <button id="match-left-${pair.id}" onclick="selectMatchLeft(${pair.id})" class="match-btn-left w-full p-3 rounded-xl border-2 border-sky-200 bg-sky-50 text-sky-900 font-bold text-xs md:text-sm text-left hover:bg-sky-100 transition shadow-sm flex items-center justify-between">
+                        <span>${pair.part}</span>
+                        <i class="fas fa-circle text-sky-300 text-xs"></i>
+                    </button>
+                `;
+            });
+            document.getElementById('matching-left-list').innerHTML = leftHtml;
+
+            let rightHtml = '';
+            shuffledRight.forEach(pair => {
+                rightHtml += `
+                    <button id="match-right-${pair.id}" onclick="selectMatchRight(${pair.id})" class="match-btn-right w-full p-3 rounded-xl border-2 border-amber-200 bg-amber-50 text-amber-900 font-semibold text-xs md:text-sm text-left hover:bg-amber-100 transition shadow-sm flex items-center justify-between">
+                        <span>${pair.desc}</span>
+                        <i class="fas fa-circle text-amber-300 text-xs"></i>
+                    </button>
+                `;
+            });
+            document.getElementById('matching-right-list').innerHTML = rightHtml;
+        }
+
+        function selectMatchLeft(id) {
+            playSound('click');
+            selectedLeft = id;
+            document.querySelectorAll('.match-btn-left').forEach(btn => {
+                btn.classList.remove('ring-4', 'ring-sky-400', 'bg-sky-200');
+            });
+            const activeBtn = document.getElementById(`match-left-${id}`);
+            if (activeBtn) activeBtn.classList.add('ring-4', 'ring-sky-400', 'bg-sky-200');
+            checkMatch();
+        }
+
+        function selectMatchRight(id) {
+            playSound('click');
+            selectedRight = id;
+            document.querySelectorAll('.match-btn-right').forEach(btn => {
+                btn.classList.remove('ring-4', 'ring-amber-400', 'bg-amber-200');
+            });
+            const activeBtn = document.getElementById(`match-right-${id}`);
+            if (activeBtn) activeBtn.classList.add('ring-4', 'ring-amber-400', 'bg-amber-200');
+            checkMatch();
+        }
+
+        function checkMatch() {
+            if (selectedLeft !== null && selectedRight !== null) {
+                const toast = document.getElementById('matching-toast');
+                toast.classList.remove('hidden');
+
+                if (selectedLeft === selectedRight) {
+                    playSound('correct');
+                    toast.className = 'mb-4 p-3 rounded-xl text-center font-bold text-xs md:text-sm bg-emerald-100 text-emerald-800 border border-emerald-300';
+                    toast.innerText = '🎉 Benar! Pasanganmu Sangat Tepat!';
+
+                    // Disable matched items
+                    const leftBtn = document.getElementById(`match-left-${selectedLeft}`);
+                    const rightBtn = document.getElementById(`match-right-${selectedRight}`);
+                    
+                    if (leftBtn) {
+                        leftBtn.disabled = true;
+                        leftBtn.className = 'w-full p-3 rounded-xl bg-emerald-100 border-2 border-emerald-400 text-emerald-800 font-bold text-xs md:text-sm text-left opacity-75';
+                        leftBtn.innerHTML += ' <i class="fas fa-check-circle text-emerald-600"></i>';
+                    }
+                    if (rightBtn) {
+                        rightBtn.disabled = true;
+                        rightBtn.className = 'w-full p-3 rounded-xl bg-emerald-100 border-2 border-emerald-400 text-emerald-800 font-semibold text-xs md:text-sm text-left opacity-75';
+                        rightBtn.innerHTML += ' <i class="fas fa-check-circle text-emerald-600"></i>';
+                    }
+
+                    matchedCount++;
+                    if (matchedCount === matchingPairs.length) {
+                        playSound('fanfare');
+                        toast.innerText = '🏆 HEBAT! Kamu Menyelesaikan Semua Pasangan dengan Benar!';
+                    }
+                } else {
+                    playSound('wrong');
+                    toast.className = 'mb-4 p-3 rounded-xl text-center font-bold text-xs md:text-sm bg-rose-100 text-rose-800 border border-rose-300';
+                    toast.innerText = '❌ Coba Lagi! Pasangan tersebut kurang tepat.';
+                }
+
+                // Reset selections
+                selectedLeft = null;
+                selectedRight = null;
+            }
+        }
+
+        function resetMatchingGame() {
+            playSound('click');
+            initMatchingGame();
+        }
+
+        /* ==================== QUIZ QUESTIONS (10 ITEMS) ==================== */
+        const quizQuestions = [
+            {
+                q: "1. Dimanakah letak keberadaan akar tumbuhan pada umumnya?",
+                options: ["Di atas daun", "Di dalam tanah", "Mengapung di awan", "Di dalam buah"],
+                answer: 1,
+                explain: "Akar pada umumnya tumbuh menghujam ke dalam tanah untuk menyerap air dan menopang tanaman."
+            },
+            {
+                q: "2. Bagian akar yang bertugas khusus menyerap air dan mineral hara dari tanah adalah...",
+                options: ["Tudung akar", "Rambut akar", "Batang utama", "Bunga"],
+                answer: 1,
+                explain: "Rambut atau bulu akar memiliki permukaan halus yang efektif menyerap air dari dalam tanah."
+            },
+            {
+                q: "3. Apa fungsi utama dari tudung akar (kaliptra)?",
+                options: ["Menyimpan cadangan makanan", "Melindungi ujung akar saat menembus tanah", "Menyerap cahaya matahari", "Menarik perhatian serangga"],
+                answer: 1,
+                explain: "Tudung akar berada di bagian paling depan untuk melindungi jaringan lembut ujung akar dari gesekan tanah."
+            },
+            {
+                q: "4. Tumbuhan manakah di bawah ini yang memiliki jenis akar tunggang?",
+                options: ["Padi", "Jagung", "Pohon Mangga", "Rumput"],
+                answer: 2,
+                explain: "Pohon Mangga adalah tumbuhan dikotil berkambium yang memiliki akar tunggang yang kuat."
+            },
+            {
+                q: "5. Ciri utama dari akar serabut adalah...",
+                options: ["Memiliki 1 akar utama yang sangat besar", "Akar berbentuk kumpulan benang sejajar dari pangkal batang", "Hanya tumbuh di atas pohon", "Berwarna merah terang"],
+                answer: 1,
+                explain: "Akar serabut tidak memiliki akar utama, melainkan banyak akar halus berukuran sama dari pangkal batang."
+            },
+            {
+                q: "6. Wortel dan Singkong memanfaatkan akarnya sebagai tempat...",
+                options: ["Alat fotosintesis", "Penyimpanan cadangan makanan", "Alat perkembangbiakan stek", "Menarik air hujan"],
+                answer: 1,
+                explain: "Wortel dan singkong menyimpan hasil fotosintesis di dalam akar (umbi akar)."
+            },
+            {
+                q: "7. Mengapa akar tanaman sangat penting saat hujan deras terjadi di lereng gunung?",
+                options: ["Membuat tanah menjadi licin", "Mencegah erosi dan tanah longsor", "Menghentikan hujan turun", "Mengubah warna tanah"],
+                answer: 1,
+                explain: "Cengkeraman akar pohon di dalam tanah mengikat butiran tanah sehingga mencegah erosi dan bencana tanah longsor."
+            },
+            {
+                q: "8. Tumbuhan padi dan jagung tergolong memiliki jenis akar...",
+                options: ["Tunggang", "Serabut", "Napas", "Pelekat"],
+                answer: 1,
+                explain: "Padi dan jagung merupakan tumbuhan monokotil yang memiliki sistem perakaran serabut."
+            },
+            {
+                q: "9. Bagian yang menghubungkan akar dengan batang tumbuhan disebut...",
+                options: ["Ujung akar", "Leher / Pangkal akar", "Tudung akar", "Daun majemuk"],
+                answer: 1,
+                explain: "Leher akar adalah zona perbatasan tempat ditemukannya batas antara akar dan pangkal batang."
+            },
+            {
+                q: "10. Manakah yang BUKAN merupakan fungsi dari akar tumbuhan?",
+                options: ["Menyerap air dan zat hara", "Menancapkan tumbuhan agar kokoh", "Melakukan proses fotosintesis menghasilkan buah", "Menyimpan cadangan makanan"],
+                answer: 2,
+                explain: "Fotosintesis utama terjadi di daun yang mengandung klorofil, bukan tugas utama akar."
+            }
+        ];
+
+        function loadQuizQuestion() {
+            const q = quizQuestions[currentQuizIndex];
+            document.getElementById('quiz-num-badge').innerText = currentQuizIndex + 1;
+            document.getElementById('quiz-current-num').innerText = currentQuizIndex + 1;
+            document.getElementById('quiz-live-score').innerText = quizScore;
+            document.getElementById('quiz-question-text').innerText = q.q;
+
+            // Reset feedback
+            const feedbackBox = document.getElementById('quiz-feedback-box');
+            feedbackBox.classList.add('hidden');
+
+            const btnNext = document.getElementById('btn-quiz-next');
+            btnNext.classList.add('hidden');
+
+            let optionsHtml = '';
+            const labels = ['A', 'B', 'C', 'D'];
+            q.options.forEach((opt, idx) => {
+                optionsHtml += `
+                    <button onclick="checkQuizAnswer(${idx})" id="opt-btn-${idx}" class="quiz-opt-btn w-full p-3.5 rounded-2xl border-2 border-slate-200 bg-slate-50 text-slate-800 font-semibold text-xs md:text-sm text-left hover:bg-emerald-50 hover:border-emerald-300 transition flex items-center space-x-3">
+                        <span class="w-7 h-7 rounded-xl bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center flex-shrink-0">${labels[idx]}</span>
+                        <span>${opt}</span>
+                    </button>
+                `;
+            });
+            document.getElementById('quiz-options-container').innerHTML = optionsHtml;
+        }
+
+        function checkQuizAnswer(selectedIdx) {
+            playSound('click');
+            const q = quizQuestions[currentQuizIndex];
+            
+            // Disable all option buttons
+            const buttons = document.querySelectorAll('.quiz-opt-btn');
+            buttons.forEach(btn => btn.disabled = true);
+
+            const feedbackBox = document.getElementById('quiz-feedback-box');
+            const feedbackTitle = document.getElementById('quiz-feedback-title');
+            const feedbackDesc = document.getElementById('quiz-feedback-desc');
+
+            feedbackBox.classList.remove('hidden');
+
+            if (selectedIdx === q.answer) {
+                playSound('correct');
+                quizScore += 10;
+                correctAnswers++;
+                userAnswers.push({ q: currentQuizIndex + 1, isCorrect: true });
+
+                document.getElementById(`opt-btn-${selectedIdx}`).className = "w-full p-3.5 rounded-2xl border-2 border-emerald-500 bg-emerald-100 text-emerald-900 font-bold text-xs md:text-sm text-left flex items-center space-x-3";
+                
+                feedbackBox.className = "p-4 rounded-2xl border-2 bg-emerald-50 border-emerald-300 text-emerald-900";
+                feedbackTitle.innerText = "✨ Jawabanmu Benar! Hebat!";
+            } else {
+                playSound('wrong');
+                wrongAnswers++;
+                userAnswers.push({ q: currentQuizIndex + 1, isCorrect: false });
+
+                document.getElementById(`opt-btn-${selectedIdx}`).className = "w-full p-3.5 rounded-2xl border-2 border-rose-500 bg-rose-100 text-rose-900 font-bold text-xs md:text-sm text-left flex items-center space-x-3";
+                document.getElementById(`opt-btn-${q.answer}`).className = "w-full p-3.5 rounded-2xl border-2 border-emerald-500 bg-emerald-100 text-emerald-900 font-bold text-xs md:text-sm text-left flex items-center space-x-3";
+
+                feedbackBox.className = "p-4 rounded-2xl border-2 bg-rose-50 border-rose-300 text-rose-900";
+                feedbackTitle.innerText = "❌ Jawaban Kurang Tepat!";
+            }
+
+            feedbackDesc.innerText = q.explain;
+            document.getElementById('quiz-live-score').innerText = quizScore;
+
+            const btnNext = document.getElementById('btn-quiz-next');
+            btnNext.classList.remove('hidden');
+
+            if (currentQuizIndex === quizQuestions.length - 1) {
+                btnNext.innerText = "Lihat Hasil Akhir Kuis 🏆";
+            } else {
+                btnNext.innerText = "Lanjut Soal Berikutnya ➡️";
+            }
+        }
+
+        function nextQuestion() {
+            playSound('click');
+            if (currentQuizIndex < quizQuestions.length - 1) {
+                currentQuizIndex++;
+                loadQuizQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            document.getElementById('res-student-name').innerText = studentData.nama;
+            document.getElementById('res-score-number').innerText = quizScore;
+            document.getElementById('res-correct-count').innerText = correctAnswers;
+            document.getElementById('res-wrong-count').innerText = wrongAnswers;
+
+            let category = "";
+            let motivation = "";
+            let badgeIcon = "🏆";
+
+            if (quizScore >= 90) {
+                category = "Sangat Baik 🌟";
+                motivation = "Luar Biasa! Kamu sangat memahami bagian dan fungsi akar tumbuhan dengan sempurna!";
+                badgeIcon = "🌟";
+                playSound('fanfare');
+            } else if (quizScore >= 80) {
+                category = "Baik 👍";
+                motivation = "Hebat Sekali! Kamu berhasil menguasai sebagian besar materi akar!";
+                badgeIcon = "👏";
+                playSound('fanfare');
+            } else if (quizScore >= 70) {
+                category = "Cukup 🙂";
+                motivation = "Bagus! Terus tingkatkan belajar untuk pemahaman yang lebih maksimal.";
+                badgeIcon = "🌱";
+            } else {
+                category = "Perlu Bimbingan 📚";
+                motivation = "Jangan berkecil hati! Pelajari kembali materi slide dan coba kuis sekali lagi ya!";
+                badgeIcon = "💪";
+            }
+
+            document.getElementById('res-category-pill').innerText = category;
+            document.getElementById('res-motivation-text').innerText = `"${motivation}"`;
+            document.getElementById('result-badge-icon').innerText = badgeIcon;
+
+            showScreen('result-screen');
+        }
+
+        function restartQuiz() {
+            playSound('click');
+            currentQuizIndex = 0;
+            quizScore = 0;
+            correctAnswers = 0;
+            wrongAnswers = 0;
+            userAnswers = [];
+            showScreen('quiz-screen');
+        }
+
+        /* ==================== FORM SUBMISSION TO GOOGLE SHEETS ==================== */
+        document.getElementById('reflection-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            playSound('click');
+
+            const btnSubmit = document.getElementById('btn-submit-all');
+            const statusBanner = document.getElementById('submit-status-banner');
+
+            const q1 = document.getElementById('ref-q1').value.trim();
+            const q2 = document.getElementById('ref-q2').value.trim();
+            const q3 = document.getElementById('ref-q3').value.trim();
+            const q4 = document.getElementById('ref-q4').value.trim();
+
+            if (!q1 || !q2 || !q3 || !q4) {
+                alert("Mohon isi semua pertanyaan refleksi ya!");
+                return;
+            }
+
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = `<i class="fas fa-spinner fa-spin"></i> <span>Mengirim Data...</span>`;
+
+            statusBanner.classList.remove('hidden');
+            statusBanner.className = "p-4 rounded-2xl text-center text-xs md:text-sm font-bold bg-amber-100 text-amber-900 border border-amber-300";
+            statusBanner.innerText = "⏳ Sedang menghubungkan ke Google Sheets...";
+
+            const now = new Date();
+            const tanggalStr = now.toLocaleDateString('id-ID');
+            const waktuStr = now.toLocaleTimeString('id-ID');
+
+            let kategori = "Belum Kuis";
+            if (quizScore >= 90) kategori = "Sangat Baik";
+            else if (quizScore >= 80) kategori = "Baik";
+            else if (quizScore >= 70) kategori = "Cukup";
+            else kategori = "Perlu Bimbingan";
+
+            const payloadData = {
+                tanggal: tanggalStr,
+                waktu: waktuStr,
+                nama: studentData.nama || "Anonym",
+                kelas: studentData.kelas || "4 SD",
+                absen: studentData.absen || "-",
+                nilai: quizScore,
+                benar: correctAnswers,
+                salah: wrongAnswers,
+                kategori: kategori,
+                refleksi1: q1,
+                refleksi2: q2,
+                refleksi3: q3,
+                refleksi4: q4
+            };
+
+            // Send via POST to Google Apps Script Web App
+            if (GOOGLE_SHEETS_WEB_APP_URL.includes("EXAMPLE_WEB_APP_URL")) {
+                setTimeout(() => {
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = `<i class="fas fa-paper-plane"></i> <span>Kirim Hasil Belajar ke Guru</span>`;
+                    statusBanner.className = "p-4 rounded-2xl text-center text-xs md:text-sm font-bold bg-sky-100 text-sky-900 border border-sky-300";
+                    statusBanner.innerHTML = `
+                        ⚠️ <strong>Simulasi Berhasil!</strong><br>
+                        (Catatan Guru: Tautan URL Google Apps Script belum diganti di variabel <code>GOOGLE_SHEETS_WEB_APP_URL</code>. Data simulasi siap dikirim).
+                    `;
+                }, 1200);
+                return;
+            }
+
+            fetch(GOOGLE_SHEETS_WEB_APP_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payloadData)
+            })
+            .then(res => {
+                playSound('fanfare');
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = `<i class="fas fa-check-circle"></i> <span>Terkirim!</span>`;
+                statusBanner.className = "p-4 rounded-2xl text-center text-xs md:text-sm font-bold bg-emerald-100 text-emerald-900 border border-emerald-300";
+                statusBanner.innerHTML = `🎉 <strong>Hore! Data Hasil Belajar Berhasil Terkirim ke Google Sheets Guru!</strong>`;
+            })
+            .catch(err => {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = `<i class="fas fa-paper-plane"></i> <span>Coba Kirim Lagi</span>`;
+                statusBanner.className = "p-4 rounded-2xl text-center text-xs md:text-sm font-bold bg-rose-100 text-rose-900 border border-rose-300";
+                statusBanner.innerText = "❌ Terjadi kendala koneksi internet. Silakan coba lagi.";
+            });
+        });
+
+        window.onload = function() {
+            renderSlide();
+        };
+    </script>
+</body>
+</html>
